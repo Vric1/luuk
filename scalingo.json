@@ -1,0 +1,17 @@
+{
+  "name": "telegram-rp-bot",
+  "stack": "scalingo-20",
+  "buildpacks": [
+    "https://github.com/Scalingo/python-buildpack"
+  ],
+  "formation": {
+    "web": {
+      "amount": 1,
+      "size": "S"
+    }
+  },
+  "env": {
+    "PYTHONUNBUFFERED": "1",
+    "WEB_CONCURRENCY": "1"
+  }
+}

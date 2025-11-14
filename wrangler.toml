@@ -1,0 +1,16 @@
+# Конфигурация Cloudflare Worker для Telegram РП Бота
+
+name = "telegram-rp-bot"
+main = "worker.js"
+compatibility_date = "2023-12-01"
+
+# Переменные окружения (настрой в Cloudflare Dashboard)
+# TELEGRAM_BOT_TOKEN = "твой_токен_от_botfather"
+# OPENROUTER_API_KEY = "твой_ключ_от_openrouter" 
+# MODEL_NAME = "tngtech/deepseek-r1t2-chimera:free"
+
+[env.production]
+name = "telegram-rp-bot"
+
+[env.staging] 
+name = "telegram-rp-bot-staging"

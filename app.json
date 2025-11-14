@@ -1,0 +1,37 @@
+{
+  "name": "telegram-rp-bot",
+  "description": "Telegram RP Bot с ИИ, голосом и генерацией файлов",
+  "website": "https://github.com/your-username/telegram-rp-bot",
+  "repository": "https://github.com/your-username/telegram-rp-bot",
+  "stack": "scalingo-20",
+  "buildpacks": [
+    {
+      "url": "https://github.com/Scalingo/python-buildpack"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "S"
+    }
+  },
+  "env": {
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Токен Telegram бота от @BotFather",
+      "required": true
+    },
+    "OPENROUTER_API_KEY": {
+      "description": "API ключ от OpenRouter.ai для ИИ",
+      "required": true
+    },
+    "MODEL_NAME": {
+      "description": "Модель ИИ для использования",
+      "value": "tngtech/deepseek-r1t2-chimera:free",
+      "required": false
+    }
+  },
+  "addons": [],
+  "scripts": {
+    "postdeploy": "echo 'Бот задеплоен успешно!'"
+  }
+}
