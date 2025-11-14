@@ -10,7 +10,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQu
 # 👉 КОНФИГУРАЦИЯ БОТА
 # Пробуем загрузить из переменных окружения, иначе - из констант
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8491937834:AAF7rHBKjNepJ8VKNiZUaywhBc6eUWtRtUQ")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 MODEL_NAME = os.getenv("MODEL_NAME", "qwen/qwen3-coder:free")
 
 # Настройка логирования
