@@ -144,6 +144,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 📝 Доступные команды:
 /profile - Твой профиль
+/fanstat - Статистика фанатов
 /rp - Список РП команд
 /ai - Чат с ИИ (ролевая игра)
 /file - Создать файл через ИИ
@@ -167,7 +168,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'username': user.username or user.first_name,
             'rp_count': 0,
             'level': 1,
-            'exp': 0
+            'exp': 0,
+            'fans': 0,
+            'popularity': 0
         }
 
 async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -179,7 +182,9 @@ async def profile(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'username': user.username or user.first_name,
             'rp_count': 0,
             'level': 1,
-            'exp': 0
+            'exp': 0,
+            'fans': 0,
+            'popularity': 0
         }
     
     data = user_data[user.id]
@@ -211,7 +216,9 @@ async def handle_rp_action(update: Update, context: ContextTypes.DEFAULT_TYPE, a
             'username': user.username or user.first_name,
             'rp_count': 0,
             'level': 1,
-            'exp': 0
+            'exp': 0,
+            'fans': 0,
+            'popularity': 0
         }
     
     # Определяем цель действия
@@ -239,6 +246,11 @@ async def handle_rp_action(update: Update, context: ContextTypes.DEFAULT_TYPE, a
     # Обновляем статистику
     user_data[user.id]['rp_count'] += 1
     user_data[user.id]['exp'] += 5
+    
+    # Увеличиваем популярность с маленькой вероятностью
+    import random
+    if random.randint(1, 5) == 1:  # 20% шанс
+        user_data[user.id]['fans'] += random.randint(1, 3)
     
     # Повышение уровня
     if user_data[user.id]['exp'] >= 100:
@@ -290,6 +302,82 @@ async def dance(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def wave(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await handle_rp_action(update, context, 'wave')
+
+async def fanstat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Показать статистику фанатов пользователя"""
+    user = update.effective_user
+    
+    # Инициализация данных пользователя если их нет
+    if user.id not in user_data:
+        user_data[user.id] = {
+            'username': user.username or user.first_name,
+            'rp_count': 0,
+            'level': 1,
+            'exp': 0,
+            'fans': 0,
+            'popularity': 0
+        }
+    
+    data = user_data[user.id]
+    
+    # Рассчитываем статистику фанатов на основе активности
+    base_fans = data.get('fans', 0)
+    rp_bonus = data['rp_count'] * 2  # За каждое РП действие +2 фана
+    level_bonus = data['level'] * 10  # За каждый уровень +10 фанов
+    
+    total_fans = base_fans + rp_bonus + level_bonus
+    
+    # Определяем статус популярности
+    if total_fans < 10:
+        status = "🌱 Новичок"
+        status_desc = "Только начинаешь набирать популярность!"
+    elif total_fans < 50:
+        status = "⭐ Восходящая звезда"
+        status_desc = "Твоя харизма привлекает внимание!"
+    elif total_fans < 100:
+        status = "🔥 Популярный"
+        status_desc = "У тебя растёт армия поклонников!"
+    elif total_fans < 200:
+        status = "✨ Знаменитость"
+        status_desc = "Ты настоящая звезда чата!"
+    else:
+        status = "👑 Легенда"
+        status_desc = "Твоя слава гремит по всему Telegram!"
+    
+    # Генерируем случайные активности фанатов
+    import random
+    activities = [
+        "📱 Подписались на твои обновления",
+        "💕 Отправили сердечки", 
+        "🎭 Копируют твой стиль РП",
+        "🗨️ Обсуждают тебя в других чатах",
+        "📸 Делают скриншоты твоих сообщений",
+        "🎉 Устроили фан-встречу",
+        "✍️ Пишут фанфики о тебе",
+        "🎨 Рисуют твои арты"
+    ]
+    
+    recent_activity = random.sample(activities, min(3, len(activities)))
+    
+    fanstat_text = f"""
+👑 Статистика фанатов {user.first_name}
+
+📊 Общая статистика:
+👥 Фанатов: {total_fans:,}
+{status}
+💭 {status_desc}
+
+📈 Источники популярности:
+🎭 РП действия: {data['rp_count']} (+{rp_bonus} фанов)
+⭐ Уровень: {data['level']} (+{level_bonus} фанов)
+🎁 Бонус популярности: +{base_fans} фанов
+
+🔥 Недавняя активность фанатов:
+{chr(10).join([f'• {activity}' for activity in recent_activity])}
+
+💡 Совет: Больше РП действий = больше фанатов!"""
+    
+    await update.message.reply_text(fanstat_text)
 
 async def ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Команда для ИИ чата"""
@@ -515,6 +603,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 👤 Профиль:
 /profile - посмотреть свой профиль
+/fanstat - статистика фанатов
 
 💡 Примеры:
 /hug @username
@@ -556,6 +645,7 @@ def main():
     application.add_handler(CommandHandler("smile", smile))
     application.add_handler(CommandHandler("dance", dance))
     application.add_handler(CommandHandler("wave", wave))
+    application.add_handler(CommandHandler("fanstat", fanstat))
     
     # Обработчик обычных сообщений для ИИ чата (должен быть последним!)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_ai_message))
