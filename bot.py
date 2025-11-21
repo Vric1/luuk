@@ -53,7 +53,7 @@ def call_openrouter(prompt: str, system_prompt: str = None) -> str:
         return j["choices"][0]["message"]["content"]
     except Exception as e:
         logger.error(f"OpenRouter API ошибка: {e}")
-        return "😔 Ошибка ИИ, попробуй чуть позже..."
+        return "😔 братан ии еблан обновляю.."
 
 # ФУНКЦИЯ ДЛЯ СОЗДАНИЯ ФАЙЛОВ
 def generate_file_content(prompt: str, file_type: str = "txt") -> tuple[str, str]:
